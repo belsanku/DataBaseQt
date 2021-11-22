@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>source/Author.png</file>
+        <file>source/account.bin</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>source/konog.ico</file>
+        <file>source/style.qss</file>
+        <file>source/konoha.ico</file>
+    </qresource>
+</RCC>

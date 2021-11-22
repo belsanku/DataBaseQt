@@ -27,14 +27,26 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     loginform.cpp \
-    addingstudent.cpp
+    addingstudent.cpp \
+    author.cpp \
+    admin.cpp \
+    addingparty.cpp
 
 HEADERS += \
         mainwindow.h \
     loginform.h \
-    addingstudent.h
+    addingstudent.h \
+    author.h \
+    admin.h \
+    addingparty.h
 
 FORMS += \
         mainwindow.ui \
     loginform.ui \
-    addingstudent.ui
+    addingstudent.ui \
+    author.ui \
+    admin.ui \
+    addingparty.ui
+
+RESOURCES += \
+    images.qrc

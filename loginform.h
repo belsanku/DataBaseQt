@@ -16,15 +16,18 @@ public:
     explicit LoginForm(QWidget *parent = 0);
     ~LoginForm();
     bool start;
+    QString login;
+    QString password;
 
 private slots:
     void CheckAccount();
     void ExitApplication();
 
+
 public slots:
 
 private:
-    Ui::LoginForm *ui;  
+    Ui::LoginForm *ui;
 };
 
 #endif // LOGINFORM_H

@@ -60,7 +60,9 @@ void AddingStudent::on_AcceptButton_clicked()
     query->bindValue(":mail", mail);
     query->bindValue(":phone", phone);
 
-    query->exec();
+    if( !query->exec())
+            qDebug() << "Unable to add in table:\n" << query->lastError();
+
     query->clear();
 
     this->close();

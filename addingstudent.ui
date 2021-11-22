@@ -11,7 +11,11 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Добавить студента</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="images.qrc">
+    <normaloff>:/source/konoha.ico</normaloff>:/source/konoha.ico</iconset>
   </property>
   <widget class="QLabel" name="PhotoLabel">
    <property name="geometry">
@@ -240,6 +244,8 @@
    </property>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="images.qrc"/>
+ </resources>
  <connections/>
 </ui>

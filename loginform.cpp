@@ -1,13 +1,20 @@
 #include "loginform.h"
 #include "ui_loginform.h"
+#include "admin.h"
 #include <QObject>
 #include <QString>
+#include <QFile>
+#include <QDataStream>
+#include <QDebug>
+#include <QTextCodec>
 
 LoginForm::LoginForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LoginForm)
 {
     ui->setupUi(this);
+    login = "admin";
+    password = "admin";
     ui->ErrorLabel->setVisible(false);
     connect(ui->OkayButton, SIGNAL(clicked()), this, SLOT(CheckAccount()));
     connect(ui->CancelButton, SIGNAL(clicked()), this, SLOT(ExitApplication()));
@@ -19,11 +26,11 @@ void LoginForm::CheckAccount()
     ui->ErrorLabel->setStyleSheet("color: #E51837");
 
     //Проверка полей на пустоту;
-    QString login = "";
-    QString password = "";
-    login = ui->LoginLine->text();
-    password = ui->PasswordLine->text();
-    if (login.isEmpty() || password.isEmpty())
+    QString tempLogin = "";
+    QString tempPassword = "";
+    tempLogin = ui->LoginLine->text();
+    tempPassword = ui->PasswordLine->text();
+    if (tempLogin != login || tempPassword != password)
     {
         ui->ErrorLabel->setVisible(true);
     }else{
@@ -44,3 +51,5 @@ LoginForm::~LoginForm()
 {
     delete ui;
 }
+
+
