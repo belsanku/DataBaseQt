@@ -54,5 +54,16 @@ void AddingParty::on_acceptParty_clicked()
             qDebug() << "Unable to add in table:\n" << partyQuery->lastError();
     partyQuery->clear();
 
+    QString FilePath = "D:/qt/CourseWork/source/Gallery/" + partyName + "/";
+
+    qDebug()<<FilePath;
+
+    QDir dir;
+
+    if(dir.mkpath(FilePath))
+        qDebug("Folder created");
+    if(dir.exists(FilePath))
+        qDebug("Folder exists");
+
     this->close();
 }

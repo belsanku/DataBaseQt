@@ -504,7 +504,7 @@
          <x>10</x>
          <y>560</y>
          <width>141</width>
-         <height>23</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
@@ -517,7 +517,7 @@
          <x>160</x>
          <y>560</y>
          <width>141</width>
-         <height>23</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
@@ -530,7 +530,7 @@
          <x>440</x>
          <y>560</y>
          <width>141</width>
-         <height>23</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -831,6 +831,9 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="scaledContents">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QPushButton" name="BeforeImage">

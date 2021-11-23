@@ -10,6 +10,7 @@
 #include <QFile>
 #include <QIODevice>
 #include <QSqlError>
+#include <QDir>
 
 namespace Ui {
 class AddingParty;

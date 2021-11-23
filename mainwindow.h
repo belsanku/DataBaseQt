@@ -14,6 +14,8 @@
 #include <QSqlError>
 #include <QTextCodec>
 #include <QDataStream>
+#include <QTextStream>
+#include <QVector>
 
 namespace Ui {
 class MainWindow;
@@ -63,6 +65,8 @@ private slots:
 
     void on_updatePartyButton_clicked();
 
+    void on_AddPhoto_clicked();
+
 protected:
 
 
@@ -75,6 +79,7 @@ private:
     QSqlQuery *query;
     QSqlQuery *partyQuery;
 
+    QVector<QString>images;
     int row = 1;
     int partyRow = 1;
 };

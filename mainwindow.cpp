@@ -66,6 +66,33 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->partyTableView->setModel(partyModel);
 
     updateComboBox();
+
+    QString folderName = ui->ChooseParty->currentText();
+    //qDebug()<<folderName;
+    QString infoImagesPath = "D:/qt/CourseWork/source/Gallery/" + folderName + "/images.txt";
+    //qDebug()<<infoImagesPath;
+
+    QFile file(infoImagesPath);
+
+
+    if(file.open(QIODevice::ReadOnly |QIODevice::Text))
+        {
+            while(!file.atEnd())
+            {
+                //читаем строку
+                QString str = file.readLine();
+                str.remove(str.length()-1, str.length());
+                //Делим строку на слова разделенные пробелом
+                images.push_back(str);
+            }
+
+        }
+        else
+        {
+            qDebug()<< "can't open the file";
+        }
+    QPixmap pixmap(images[0]);
+    ui->PartyImage->setPixmap(pixmap);
 }
 
 MainWindow::~MainWindow()
@@ -247,8 +274,49 @@ void MainWindow::on_partyTableView_clicked(const QModelIndex &index)
     updateComboBox();
 }
 
+//Функция удаления папки
+int removeFolder(QDir & dir)
+{
+  int res = 0;
+  //Получаем список каталогов
+  QStringList lstDirs = dir.entryList(QDir::Dirs |
+                  QDir::AllDirs |
+                  QDir::NoDotAndDotDot);
+  //Получаем список файлов
+  QStringList lstFiles = dir.entryList(QDir::Files);
+
+  //Удаляем файлы
+  foreach (QString entry, lstFiles)
+  {
+   QString entryAbsPath = dir.absolutePath() + "/" + entry;
+   QFile::setPermissions(entryAbsPath, QFile::ReadOwner | QFile::WriteOwner);
+   QFile::remove(entryAbsPath);
+  }
+
+  //Для папок делаем рекурсивный вызов
+  foreach (QString entry, lstDirs)
+  {
+   QString entryAbsPath = dir.absolutePath() + "/" + entry;
+   QDir dr(entryAbsPath);
+   removeFolder(dr);
+  }
+
+  //Удаляем обрабатываемую папку
+  if (!QDir().rmdir(dir.absolutePath()))
+  {
+    res = 1;
+  }
+  return res;
+}
+
 void MainWindow::on_deletePartyButton_clicked()
 {
+    QString PartyName = partyModel->index(partyRow,0).data().toString();
+    QDir dir;
+
+    dir = "D:/qt/CourseWork/source/Gallery/" + PartyName + "/";
+    removeFolder(dir);
+
     partyModel->removeRow(partyRow);
 
     partyModel =  new QSqlTableModel(this, partyDB);
@@ -273,4 +341,23 @@ void MainWindow::on_updatePartyButton_clicked()
     ui->partyTableView->setModel(partyModel);
 
     updateComboBox();
+}
+
+void MainWindow::on_AddPhoto_clicked()
+{
+
+    QString folderName = ui->ChooseParty->currentText();
+    QString infoImagesPath = "D:/qt/CourseWork/source/Gallery/" + folderName + "/images.txt";
+
+    QFile file(infoImagesPath);
+
+    QString PathToImage = QFileDialog::getOpenFileName(0, "Открыть изображение", QDir::currentPath(), "Файлы изображений (*.png *.jpg *.bmp)");
+
+    if (file.open(QIODevice::Append)) {
+        QTextStream out(&file);
+        out<<PathToImage;
+        out<<"\n";
+    }
+
+    file.close();
 }
