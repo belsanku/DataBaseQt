@@ -28,6 +28,8 @@ public slots:
 
 private:
     Ui::LoginForm *ui;
+
+    QVector<QString>adminInfo;
 };
 
 #endif // LOGINFORM_H

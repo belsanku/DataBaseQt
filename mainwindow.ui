@@ -464,7 +464,7 @@
         <x>10</x>
         <y>20</y>
         <width>591</width>
-        <height>601</height>
+        <height>451</height>
        </rect>
       </property>
       <property name="title">
@@ -476,7 +476,7 @@
          <x>10</x>
          <y>20</y>
          <width>571</width>
-         <height>531</height>
+         <height>381</height>
         </rect>
        </property>
        <property name="focusPolicy">
@@ -502,7 +502,7 @@
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>560</y>
+         <y>410</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -515,7 +515,7 @@
        <property name="geometry">
         <rect>
          <x>160</x>
-         <y>560</y>
+         <y>410</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -528,7 +528,7 @@
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>560</y>
+         <y>410</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -784,8 +784,8 @@
       <widget class="QComboBox" name="ChooseParty">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>250</y>
+         <x>100</x>
+         <y>260</y>
          <width>161</width>
          <height>22</height>
         </rect>
@@ -794,8 +794,8 @@
       <widget class="QPushButton" name="AddPhoto">
        <property name="geometry">
         <rect>
-         <x>180</x>
-         <y>250</y>
+         <x>10</x>
+         <y>260</y>
          <width>81</width>
          <height>23</height>
         </rect>
@@ -808,7 +808,7 @@
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>250</y>
+         <y>260</y>
          <width>81</width>
          <height>23</height>
         </rect>
@@ -820,10 +820,10 @@
       <widget class="QLabel" name="PartyImage">
        <property name="geometry">
         <rect>
-         <x>70</x>
+         <x>10</x>
          <y>290</y>
-         <width>221</width>
-         <height>201</height>
+         <width>341</width>
+         <height>261</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -839,10 +839,10 @@
       <widget class="QPushButton" name="BeforeImage">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>380</y>
-         <width>31</width>
-         <height>23</height>
+         <x>120</x>
+         <y>560</y>
+         <width>51</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
@@ -852,14 +852,82 @@
       <widget class="QPushButton" name="NextImage">
        <property name="geometry">
         <rect>
-         <x>290</x>
-         <y>380</y>
-         <width>31</width>
-         <height>23</height>
+         <x>190</x>
+         <y>560</y>
+         <width>51</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
         <string>&gt;&gt;</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="studentGroupBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>480</y>
+        <width>591</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Студенты, посетившие мероприятие</string>
+      </property>
+      <widget class="QListWidget" name="listWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>301</width>
+         <height>101</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::WinPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="saveInfo">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>100</y>
+         <width>261</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Сохранить изменения</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="addingPartyStudents">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>40</y>
+         <width>261</width>
+         <height>21</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="choosePartyStudentsLabel">
+       <property name="geometry">
+        <rect>
+         <x>320</x>
+         <y>20</y>
+         <width>261</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Выбрать студентов</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </widget>

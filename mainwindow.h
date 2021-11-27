@@ -13,6 +13,7 @@
 #include <QIODevice>
 #include <QSqlError>
 #include <QTextCodec>
+#include <QListWidget>
 #include <QDataStream>
 #include <QTextStream>
 #include <QVector>
@@ -30,6 +31,8 @@ public:
     ~MainWindow();
 
     void updateComboBox();
+    void create_Students_folder();
+    void update_PartyStudents_combo();
 
 
 private slots:
@@ -67,6 +70,22 @@ private slots:
 
     void on_AddPhoto_clicked();
 
+    void on_ChooseParty_currentIndexChanged(int index);
+
+    void on_BeforeImage_clicked();
+
+    void on_NextImage_clicked();
+
+    void on_addStudentButton_clicked();
+
+    void on_addingPartyStudents_highlighted(int index);
+
+    void on_addingPartyStudents_currentIndexChanged(int index);
+
+    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_saveInfo_clicked();
+
 protected:
 
 
@@ -82,6 +101,7 @@ private:
     QVector<QString>images;
     int row = 1;
     int partyRow = 1;
+    int cnt = 0;
 };
 
 #endif // MAINWINDOW_H

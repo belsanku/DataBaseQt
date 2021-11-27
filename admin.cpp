@@ -17,17 +17,53 @@ admin::~admin()
 
 void admin::on_ChangeButton_clicked()
 {
-    QString oldPassword = "";
     QString oldLogin = "";
-    oldPassword = ui->oldPasswordEdit->text();
-    oldLogin = ui->oldLoginEdit->text();
-    this->close();
-    /*if (oldPassword != LoginForm::password || oldLogin != LoginForm::login)
+    QString oldPassword = "";
+
+    QString newLogin = "";
+    QString newPassword = "";
+
+    QString accountInfo = "D:/qt/CourseWork/source/Gallery/AccountInfo/admin.txt";
+
+    QFile admin(accountInfo);
+
+    if(admin.open(QIODevice::ReadOnly |QIODevice::Text))
+        {
+            while(!admin.atEnd())
+            {
+                //читаем строку
+                QString str = admin.readLine();
+                str.remove(str.length()-1, str.length());
+                //Делим строку на слова разделенные пробелом
+                oldAcc.push_back(str);
+            }
+            admin.close();
+        }
+        else
+        {
+            qDebug()<< "can't open the file";
+        }
+    oldLogin = oldAcc[0];
+    oldPassword = oldAcc[1];
+
+    QString checkOldLogin = ui->oldLoginEdit->text();
+    QString checkOldPassword = ui->oldPasswordEdit->text();
+
+    QTextStream ts(&admin);
+
+    if (oldLogin != checkOldLogin || oldPassword != checkOldPassword)
     {
         ui->CheckLabel->setVisible(true);
-    }else{
-       // LoginForm::password = ui->newPasswordEdit->text();
-        //LoginForm::login = ui->newLoginEdit->text();
+    }else
+    {
+        if (admin.open(QIODevice::WriteOnly))
+        {
+            newLogin = ui->newLoginEdit->text() + "\n";
+            newPassword = ui->newPasswordEdit->text() + "\n";
+            ts<<newLogin<<newPassword;
+            admin.close();
+        }
         this->close();
-    }*/
+    }
+
 }

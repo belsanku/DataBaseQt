@@ -21,6 +21,7 @@ private slots:
 
 private:
     Ui::admin *ui;
+    QVector<QString>oldAcc;
 };
 
 #endif // ADMIN_H

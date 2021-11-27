@@ -66,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->partyTableView->setModel(partyModel);
 
     updateComboBox();
+    update_PartyStudents_combo();
 
     QString folderName = ui->ChooseParty->currentText();
     //qDebug()<<folderName;
@@ -93,6 +94,36 @@ MainWindow::MainWindow(QWidget *parent) :
         }
     QPixmap pixmap(images[0]);
     ui->PartyImage->setPixmap(pixmap);
+
+    row = 0;
+
+    QString FullName = model->index(row,0).data().toString();
+    ui->FullNameLabel->setText(FullName);
+
+    //Сколько лет
+    QString AgeLevel = model->index(row,1).data().toString();
+    ui->BirthdayTrueLabel->setText(AgeLevel);
+
+    QDate currentDate = QDate::currentDate();
+    QDate oldAge = QDate::fromString(AgeLevel, "dd.MM.yyyy");
+    qint64 days = oldAge.daysTo(currentDate);
+    days/=365;
+    QString actualYears = QString::number(days); // actual conversion
+    ui->AgeTrueLabel->setText(actualYears);
+    //
+
+    QString numberOfGroup = model->index(row,2).data().toString();
+    ui->GroupTrueLabel->setText(numberOfGroup);
+
+    QString ImageSrc = model->index(row, 3).data().toString();
+    QPixmap tempPix(ImageSrc);
+    ui->ImageLabel->setPixmap(tempPix);
+
+    QString ParentsNumber = model->index(row,5).data().toString();
+    ui->NumberTrueLabel->setText(ParentsNumber);
+
+    QString Mail = model->index(row,4).data().toString();
+    ui->MailTrueLabel->setText(Mail);
 }
 
 MainWindow::~MainWindow()
@@ -102,12 +133,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::updateComboBox()
 {
+
+    //КОМБО БОКС С МЕРОПРИЯТИЯМИ
     ui->ChooseParty->clear();
     int size = partyModel->rowCount();
     for (int i = 0; i<size; ++i)
     {
         ui->ChooseParty->addItem(partyModel->index(i,0).data().toString());
     }
+
 }
 
 
@@ -154,7 +188,6 @@ void MainWindow::on_NewPassword_clicked()
 //ДОБАВИТЬ СТУДЕНТА//
 void MainWindow::on_addStudent_clicked()
 {
-    //model->insertRow(model->rowCount());
     AddingStudent *newStudent = new AddingStudent();
     newStudent->show();
 
@@ -163,6 +196,8 @@ void MainWindow::on_addStudent_clicked()
     model->select();
 
     ui->DBnamespace->setModel(model);
+
+    create_Students_folder();
 }
 
 //УДАЛИТЬ СТУДЕНТА//
@@ -174,6 +209,8 @@ void MainWindow::on_deleteStudent_clicked()
     model->select();
 
     ui->DBnamespace->setModel(model);
+
+    create_Students_folder();
 }
 
 //НАЖАТИЕ НА ТАБЛИЦУ//
@@ -216,6 +253,41 @@ void MainWindow::on_editButton_clicked()
 
 }
 
+void MainWindow::create_Students_folder()
+{
+    QString folderPath = "D:/qt/CourseWork/source/Gallery/AllStudentsModelInfo/";
+    QDir dir;
+    if(dir.mkpath(folderPath))
+           qDebug("folder created");
+       if(dir.exists(folderPath))
+           qDebug("folder exists");
+
+       folderPath+="studentsInfo.txt";
+    QFile studentInfoFile(folderPath);
+
+    QTextStream ts(&studentInfoFile);
+
+    if (studentInfoFile.open(QIODevice::WriteOnly))
+    {
+        for (int i = 0; i<model->rowCount(); ++i){
+        QString FullName = model->index(i,0).data().toString() + " " + model->index(i,2).data().toString() + "\n";
+        ts<<FullName;
+        }
+        studentInfoFile.close();
+    }
+}
+
+
+void MainWindow::update_PartyStudents_combo()
+{
+    ui->addingPartyStudents->clear();
+    int n = model->rowCount();
+    ui->addingPartyStudents->addItem("");
+    for (int i = 0; i<n; ++i)
+    {
+        ui->addingPartyStudents->addItem(model->index(i,0).data().toString() + " " + model->index(i,2).data().toString());
+    }
+}
 
 //ОБНОВИТЬ ТАБЛИЦУ//
 void MainWindow::on_UpdateButton_clicked()
@@ -225,6 +297,11 @@ void MainWindow::on_UpdateButton_clicked()
     model->select();
 
     ui->DBnamespace->setModel(model);
+
+    create_Students_folder();
+
+    //КОМБО БОКС СО СТУДЕНТАМИ
+    update_PartyStudents_combo();
 }
 
 void MainWindow::on_sortDBby_clicked()
@@ -252,9 +329,11 @@ void MainWindow::on_partyButton_clicked()
     ui->tabWidget->setCurrentIndex(1);
 }
 
+//НАЖАТИЕ НА ЭЛЕМЕНТ ТАБЛИЦЫ//
 void MainWindow::on_partyTableView_clicked(const QModelIndex &index)
 {
     partyRow = index.row();
+    ui->ChooseParty->setCurrentIndex(partyRow);
 
     QString PartyName = partyModel->index(partyRow,0).data().toString();
     ui->SetPartyName->setText(PartyName);
@@ -271,10 +350,49 @@ void MainWindow::on_partyTableView_clicked(const QModelIndex &index)
     QString PartyGroup = partyModel->index(partyRow,4).data().toString();
     ui->SetPartyGroup->setText(PartyGroup);
 
-    updateComboBox();
+    ui->listWidget->clear();
+    ui->listWidget->addItem(PartyName + ":");
+
+    QString infoImagesPath = "D:/qt/CourseWork/source/Gallery/" + PartyName + "/partyStudents.txt";
+
+    QFile file(infoImagesPath);
+    QList<QString> texts;
+    QListWidgetItem *item = new QListWidgetItem();
+    if(file.open(QIODevice::ReadOnly |QIODevice::Text))
+        {
+            while(!file.atEnd())
+            {
+                //читаем строку
+                QString str = file.readLine();
+                str.remove(str.length()-1, str.length());
+                //Делим строку на слова разделенные пробелом
+                texts.push_back(str);
+            }
+
+        }
+        else
+        {
+            qDebug()<< "can't open the file";
+        }
+
+    for (int i = 1; i<texts.size(); ++i)
+    {
+        ui->listWidget->addItem(texts[i]);
+    }
+    //updateComboBox();
 }
 
-//Функция удаления папки
+void MainWindow::on_addingPartyStudents_currentIndexChanged(int index)
+{
+    int current = partyRow;
+    QString AshesOne = ui->addingPartyStudents->currentText();
+    qDebug()<<AshesOne;
+    //ui->addingPartyStudents->removeItem(index);
+    qDebug()<<index;
+    ui->listWidget->addItem(AshesOne);
+}
+
+//ФУНКЦИЯ УДАЛЕНИЯ ПАПКИ//
 int removeFolder(QDir & dir)
 {
   int res = 0;
@@ -309,6 +427,7 @@ int removeFolder(QDir & dir)
   return res;
 }
 
+//УДАЛИТЬ МЕРОПРИЯТИЕ ИЗ ТАБЛИЦЫ//
 void MainWindow::on_deletePartyButton_clicked()
 {
     QString PartyName = partyModel->index(partyRow,0).data().toString();
@@ -326,12 +445,16 @@ void MainWindow::on_deletePartyButton_clicked()
     ui->partyTableView->setModel(partyModel);
 }
 
+
+//ДОБАВИТЬ МЕРОПРИЯТИЕ В ТАБЛИЦУ//
 void MainWindow::on_addPartyButton_clicked()
 {
     AddingParty *newParty = new AddingParty;
     newParty->show();
 }
 
+
+//ОБНОВИТЬ ТАБЛИЦУ МЕРОПРИЯТИЙ//
 void MainWindow::on_updatePartyButton_clicked()
 {
     partyModel =  new QSqlTableModel(this, partyDB);
@@ -343,6 +466,8 @@ void MainWindow::on_updatePartyButton_clicked()
     updateComboBox();
 }
 
+
+//НОВОЕ ФОТО В МЕРОПРИЯТИЯХ//
 void MainWindow::on_AddPhoto_clicked()
 {
 
@@ -361,3 +486,179 @@ void MainWindow::on_AddPhoto_clicked()
 
     file.close();
 }
+
+
+//ВЫБРАТЬ МЕРОПРИЯТИЕ В COMBO BOX//
+void MainWindow::on_ChooseParty_currentIndexChanged(int index)
+{
+    partyRow = index;
+
+    QString PartyName = partyModel->index(partyRow,0).data().toString();
+    ui->SetPartyName->setText(PartyName);
+
+    QString PartyDate = partyModel->index(partyRow,1).data().toString();
+    ui->SetPartyDate->setText(PartyDate);
+
+    QString PartyAppearence = partyModel->index(partyRow,2).data().toString();
+    ui->SetPartyAppearence->setText(PartyAppearence);
+
+    QString PartyPlace = partyModel->index(partyRow,3).data().toString();
+    ui->SetPartyPlace->setText(PartyPlace);
+
+    QString PartyGroup = partyModel->index(partyRow,4).data().toString();
+    ui->SetPartyGroup->setText(PartyGroup);
+
+    images.clear();
+    ui->PartyImage->clear();
+    QString folderName = ui->ChooseParty->currentText();
+    QString infoImagesPath = "D:/qt/CourseWork/source/Gallery/" + folderName + "/images.txt";
+
+    QFile file(infoImagesPath);
+
+
+    if(file.open(QIODevice::ReadOnly |QIODevice::Text))
+        {
+            while(!file.atEnd())
+            {
+                //читаем строку
+                QString str = file.readLine();
+                str.remove(str.length()-1, str.length());
+                //Делим строку на слова разделенные пробелом
+                images.push_back(str);
+            }
+
+        }
+        else
+        {
+            qDebug()<< "can't open the file";
+        }
+    if (images.isEmpty())
+    {
+
+        ui->PartyImage->clear();
+        ui->PartyImage->setText("Картинка отсутствует.");
+        ui->BeforeImage->hide();
+        ui->NextImage->hide();
+        qDebug()<<"Empty";
+
+    }else{
+
+    QPixmap pixmap(images[0]);
+    ui->PartyImage->setPixmap(pixmap);
+    ui->BeforeImage->show();
+    ui->NextImage->show();
+
+    }
+}
+
+
+//ПРЕДЫДУЩАЯ КАРТИНКА В МЕРОПРИЯТИЯХ//
+void MainWindow::on_BeforeImage_clicked()
+{   if (images.isEmpty()){
+        qDebug()<<"Empty";
+    }else{
+    int maxSize = images.size();
+
+    if (cnt == 0)
+    {
+        cnt = maxSize-1;
+        QPixmap currentImage(images[cnt]);
+        ui->PartyImage->clear();
+        ui->PartyImage->setPixmap(currentImage);
+    }else{
+        cnt--;
+        QPixmap currentImage(images[cnt]);
+        ui->PartyImage->clear();
+        ui->PartyImage->setPixmap(currentImage);
+    }
+    }
+}
+
+//СЛЕДУЮЩАЯ КАРТИКА В МЕРОПРИЯТИЯХ//
+void MainWindow::on_NextImage_clicked()
+{   if (images.isEmpty()){
+        qDebug()<<"Empty";
+    }else{
+    int maxSize = images.size();
+
+    if (cnt<maxSize-1)
+    {
+        cnt++;
+        QPixmap currentImage(images[cnt]);
+        ui->PartyImage->clear();
+        ui->PartyImage->setPixmap(currentImage);
+    }else{
+        cnt = 0;
+        QPixmap currentImage(images[cnt]);;
+        ui->PartyImage->clear();
+        ui->PartyImage->setPixmap(currentImage);
+    }
+    }
+}
+
+
+/*void MainWindow::on_addingPartyStudents_highlighted(int index)
+{
+
+}*/
+
+
+
+void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    QList<QListWidgetItem*> items = ui->listWidget->selectedItems();
+    foreach(item, items)
+    {
+        delete ui->listWidget->takeItem(ui->listWidget->row(item));
+    }
+}
+
+void MainWindow::on_saveInfo_clicked()
+{
+
+
+    QList<QString> texts;
+
+    QList<QListWidgetItem *> items =
+          ui->listWidget->findItems(QString("*"), Qt::MatchWrap | Qt::MatchWildcard);
+
+    foreach(QListWidgetItem *item, items)
+      texts.append(item->text());
+
+    QString folderName = texts[0];
+    folderName.chop(1);
+    QString filePath = "D:/qt/CourseWork/source/Gallery/" + folderName + "/";
+    filePath += "partyStudents.txt";
+    QFile file(filePath);
+
+    QTextStream ts(&file);
+    ts.setCodec("UTF-8");
+
+    if (file.open(QIODevice::WriteOnly))
+    {
+        for (int i = 0; i<texts.size(); ++i){
+        ts<<texts[i]+"\n";
+        }
+        file.close();
+    }
+
+
+    qDebug()<<texts;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

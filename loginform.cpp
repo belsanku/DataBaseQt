@@ -12,9 +12,44 @@ LoginForm::LoginForm(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LoginForm)
 {
+    //Создание директории, хранящей логин и пароль//
+    QString accountInfo = "D:/qt/CourseWork/source/Gallery/AccountInfo/";
+
+    QDir dir;
+
+    if(dir.mkpath(accountInfo))
+        qDebug("Folder created");
+    if(dir.exists(accountInfo))
+        qDebug("Folder exists");
+
+    //Чтение данных из файла//
+
+    accountInfo = "D:/qt/CourseWork/source/Gallery/AccountInfo/admin.txt";
+
+    QFile admin(accountInfo);
+
+    if(admin.open(QIODevice::ReadOnly |QIODevice::Text))
+        {
+            while(!admin.atEnd())
+            {
+                //читаем строку
+                QString str = admin.readLine();
+                str.remove(str.length()-1, str.length());
+                //Делим строку на слова разделенные пробелом
+                adminInfo.push_back(str);
+            }
+
+        }
+        else
+        {
+            qDebug()<< "can't open the file";
+        }
+    qDebug()<<adminInfo[0]<<" "<<adminInfo[1];
+    login = adminInfo[0];
+    password = adminInfo[1];
+
+    /*///////////////////////////////////////////////////////*/
     ui->setupUi(this);
-    login = "admin";
-    password = "admin";
     ui->ErrorLabel->setVisible(false);
     connect(ui->OkayButton, SIGNAL(clicked()), this, SLOT(CheckAccount()));
     connect(ui->CancelButton, SIGNAL(clicked()), this, SLOT(ExitApplication()));

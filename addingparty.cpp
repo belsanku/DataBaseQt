@@ -56,7 +56,7 @@ void AddingParty::on_acceptParty_clicked()
 
     QString FilePath = "D:/qt/CourseWork/source/Gallery/" + partyName + "/";
 
-    qDebug()<<FilePath;
+    //qDebug()<<FilePath;
 
     QDir dir;
 
