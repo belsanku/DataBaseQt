@@ -437,7 +437,10 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="selectionMode">
-        <enum>QAbstractItemView::NoSelection</enum>
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
        </property>
        <attribute name="horizontalHeaderCascadingSectionResizes">
         <bool>false</bool>
@@ -483,7 +486,10 @@
         <enum>Qt::NoFocus</enum>
        </property>
        <property name="selectionMode">
-        <enum>QAbstractItemView::NoSelection</enum>
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>106</number>
@@ -881,7 +887,7 @@
          <x>10</x>
          <y>20</y>
          <width>301</width>
-         <height>101</height>
+         <height>91</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -930,17 +936,425 @@
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
+      <widget class="QLabel" name="additionalInfoLabel">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>117</y>
+         <width>301</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>7</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>*Нажмите два раза на студента, чтобы удалить из списка</string>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="thirdTab">
      <attribute name="title">
       <string>Успеваемость</string>
      </attribute>
+     <widget class="QGroupBox" name="successGroupBox">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>951</width>
+        <height>591</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Таблица успеваемости</string>
+      </property>
+      <widget class="QTableView" name="successTableView">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>931</width>
+         <height>451</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="saveSuccessTableViewButton">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>540</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Сохранить</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="unsuccessfulStudentsTableViewButton">
+       <property name="geometry">
+        <rect>
+         <x>140</x>
+         <y>480</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Неуспевающие</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="createPdfSuccessTableViewButton">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>480</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Создать отчёт</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="setResultSession">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>540</y>
+         <width>241</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Проставить результаты сессии</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="resetSuccessTableView">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>480</y>
+         <width>111</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Сбросить</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="successComboBox">
+       <property name="geometry">
+        <rect>
+         <x>650</x>
+         <y>480</y>
+         <width>121</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="successLabel">
+       <property name="geometry">
+        <rect>
+         <x>558</x>
+         <y>480</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Выбрать группу:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="searchByFIO">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>550</y>
+         <width>211</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="Line" name="line">
+       <property name="geometry">
+        <rect>
+         <x>470</x>
+         <y>470</y>
+         <width>20</width>
+         <height>121</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="showGroupButton">
+       <property name="geometry">
+        <rect>
+         <x>790</x>
+         <y>480</y>
+         <width>101</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Показать</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="searchStudent">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>530</y>
+         <width>211</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Поиск студента по ФИО:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="searchButton">
+       <property name="geometry">
+        <rect>
+         <x>790</x>
+         <y>550</y>
+         <width>101</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Поиск</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>572</y>
+         <width>210</width>
+         <height>13</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>*Введите ФИО полностью</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QLabel" name="successNameLabel">
+      <property name="geometry">
+       <rect>
+        <x>810</x>
+        <y>2</y>
+        <width>161</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Успеваемость</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="fourthTab">
      <attribute name="title">
       <string>Старосты</string>
      </attribute>
+     <widget class="QGroupBox" name="akatsukiLeader">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>551</width>
+        <height>451</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Список старост</string>
+      </property>
+      <widget class="QTableView" name="akatsukiTableView">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>20</y>
+         <width>531</width>
+         <height>421</height>
+        </rect>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::DoubleClicked</set>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QGroupBox" name="akatsukiSelecetor">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>20</y>
+        <width>391</width>
+        <height>221</height>
+       </rect>
+      </property>
+      <property name="title">
+       <string>Инструментарий</string>
+      </property>
+      <widget class="QComboBox" name="chooseGroupOfAkatsuki">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>30</y>
+         <width>101</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="chooseLeaderOfAkatsuki">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>90</y>
+         <width>241</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="akatsukiGroupLabel">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>30</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Выбрать группу:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="akatsukiLeaderLabel">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>90</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Выбрать студента:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="addAkatsukiLeader">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>160</y>
+         <width>130</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Назначить старостой</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QPushButton" name="saveAkatsukiTableButton">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>540</y>
+        <width>141</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Сохранить данные</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="AkatsukiPageLabel">
+      <property name="geometry">
+       <rect>
+        <x>858</x>
+        <y>2</y>
+        <width>111</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Старосты</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="deleteLeaderButton">
+      <property name="geometry">
+       <rect>
+        <x>210</x>
+        <y>480</y>
+        <width>141</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить старосту</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="BigCatLabel">
+      <property name="geometry">
+       <rect>
+        <x>570</x>
+        <y>250</y>
+        <width>391</width>
+        <height>271</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -960,13 +1374,6 @@
     <addaction name="OpenFile"/>
     <addaction name="SaveFile"/>
    </widget>
-   <widget class="QMenu" name="Info">
-    <property name="title">
-     <string>Справочник</string>
-    </property>
-    <addaction name="Help"/>
-    <addaction name="CreateQuestin"/>
-   </widget>
    <widget class="QMenu" name="About">
     <property name="title">
      <string>О программе</string>
@@ -975,7 +1382,6 @@
     <addaction name="NewPassword"/>
    </widget>
    <addaction name="Open"/>
-   <addaction name="Info"/>
    <addaction name="About"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">

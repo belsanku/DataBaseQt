@@ -14,11 +14,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->tabWidget->setCurrentIndex(0);
 
+    //Инициализация триггеров
     connect(ui->Authors, SIGNAL(triggered()), this, SLOT(on_Authors_clicked()));
     connect(ui->OpenFile, SIGNAL(triggered()), this, SLOT(on_OpenFile_clicked()));
     connect(ui->SaveFile, SIGNAL(triggered()), this, SLOT(on_SaveFile_clicked()));
     connect(ui->NewPassword, SIGNAL(triggered()), this, SLOT(on_NewPassword_clicked()));
 
+
+    //Создание базы данных студентов
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("./DataBase.db");
 
@@ -42,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->DBnamespace->setModel(model);
 
+
+    //Создание базы данных мероприятий
     partyDB = QSqlDatabase::addDatabase("QSQLITE", "Second");
     partyDB.setDatabaseName("./PartyDatabase.db");
 
@@ -65,13 +70,18 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->partyTableView->setModel(partyModel);
 
+    QString BigCatPath = ":/img/source/goodMorning.png";
+    QPixmap BigCat(BigCatPath);
+    ui->BigCatLabel->setPixmap(BigCat);
+
     updateComboBox();
     update_PartyStudents_combo();
+    update_successComboBox();
+    update_akatsukiComboBox();
+    update_leaderOfAkatsukiComboBox();
 
     QString folderName = ui->ChooseParty->currentText();
-    //qDebug()<<folderName;
     QString infoImagesPath = "D:/qt/CourseWork/source/Gallery/" + folderName + "/images.txt";
-    //qDebug()<<infoImagesPath;
 
     QFile file(infoImagesPath);
 
@@ -124,12 +134,144 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QString Mail = model->index(row,4).data().toString();
     ui->MailTrueLabel->setText(Mail);
+
+
+    checkSuccessFile();
+    checkAkatsukiSuccessFile();
+
 }
+
+
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::readSuccessTableView()
+{
+
+    QFile file("D:/qt/CourseWork/source/SuccessTable/successTable.csv");
+       if ( !file.open(QFile::ReadOnly | QFile::Text) ) {
+           qDebug() << "File not exists";
+       } else {
+
+           QTextStream in(&file);
+           successModel->clear();
+           for (int i =0; i<7; ++i){
+               QStandardItem* newColumn = new QStandardItem(QString(ColumnNames[i]));
+               successModel->setHorizontalHeaderItem(i, newColumn);
+
+           }
+           while (!in.atEnd())
+           {
+               QString line = in.readLine();
+
+               QList<QStandardItem *> standardItemsList;
+
+               for (QString item : line.split(";")) {
+                   standardItemsList.append(new QStandardItem(item));
+               }
+               successModel->insertRow(successModel->rowCount(), standardItemsList);
+           }
+           file.close();
+       }
+
+       ui->successTableView->setColumnWidth(0,490);
+       ui->successTableView->setColumnWidth(1, 100);
+       for (int i =2; i<7; ++i)
+       {
+           ui->successTableView->setColumnWidth(i, 60);
+       }
+
+       ui->successTableView->setColumnHidden(7,true);
+}
+
+//СОХРАНЕНИЕ ТАБЛИЦЫ УСПЕВАЕМОСТИ//
+void MainWindow::saveSuccessTableView()
+{
+    QString textData;
+    int rows = successModel->rowCount();
+    int columns = successModel->columnCount();
+
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+
+                textData += successModel->data(successModel->index(i,j)).toString();
+                textData += "; " ;
+        }
+        textData += "\n";
+    }
+
+    QString folderPath = "D:/qt/CourseWork/source/SuccessTable/";
+    QDir dir;
+    if(dir.mkpath(folderPath))
+           qDebug("folder created");
+       if(dir.exists(folderPath))
+           qDebug("folder exists");
+
+       folderPath+="successTable.csv";
+
+    QFile csvFile(folderPath);
+    if(csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+
+        QTextStream out(&csvFile);
+        out << textData;
+
+        csvFile.close();
+    }
+}
+
+void MainWindow::createSuccessTableView()
+{
+
+    int size = model->rowCount();
+    for (int i = 0; i<size; ++i)
+    {
+        StudentName.push_back(model->index(i,0).data().toString());
+        StudentGroup.push_back(model->index(i,2).data().toString());
+    }
+
+    ColumnNames<<"ФИО"<< "Группа"<< "ВПиЧМВ"<< "ОС"<< "МатЛог"<< "ТМО"<< "Сессия";
+
+    successModel = new QStandardItemModel(size,7);
+    for (int row = 0; row < size; ++row) {
+        for (int column = 0; column < 7; ++column) {
+            QStandardItem *item = new QStandardItem(QString("").arg(row).arg(column));
+            successModel->setItem(row, column, item);
+        }
+    }
+
+    ui->successTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->successTableView->setSelectionMode(QAbstractItemView::SingleSelection);
+
+    for (int i =0; i<7; ++i){
+        QStandardItem* newColumn = new QStandardItem(QString(ColumnNames[i]));
+        successModel->setHorizontalHeaderItem(i, newColumn);
+
+    }
+    ui->successTableView->setModel(successModel);
+}
+
+void MainWindow::fillTableView()
+{
+    int size = model->rowCount();
+    ui->successTableView->setColumnWidth(0,490);
+    ui->successTableView->setColumnWidth(1, 100);
+    for (int i =2; i<7; ++i)
+    {
+        ui->successTableView->setColumnWidth(i, 60);
+    }
+
+    for (int i = 0; i<size; ++i){
+        QStandardItem* newElement = new QStandardItem(QString(StudentName[i]));
+        QStandardItem* newTempElement = new QStandardItem(QString(StudentGroup[i]));
+        successModel->setItem(i,0,newElement);
+        successModel->setItem(i,1,newTempElement);
+    }
+    successModel->sort(1, Qt::AscendingOrder);
+}
+
 
 void MainWindow::updateComboBox()
 {
@@ -211,6 +353,7 @@ void MainWindow::on_deleteStudent_clicked()
     ui->DBnamespace->setModel(model);
 
     create_Students_folder();
+    update_successComboBox();
 }
 
 //НАЖАТИЕ НА ТАБЛИЦУ//
@@ -302,6 +445,7 @@ void MainWindow::on_UpdateButton_clicked()
 
     //КОМБО БОКС СО СТУДЕНТАМИ
     update_PartyStudents_combo();
+    update_successComboBox();
 }
 
 void MainWindow::on_sortDBby_clicked()
@@ -357,7 +501,6 @@ void MainWindow::on_partyTableView_clicked(const QModelIndex &index)
 
     QFile file(infoImagesPath);
     QList<QString> texts;
-    QListWidgetItem *item = new QListWidgetItem();
     if(file.open(QIODevice::ReadOnly |QIODevice::Text))
         {
             while(!file.atEnd())
@@ -384,7 +527,7 @@ void MainWindow::on_partyTableView_clicked(const QModelIndex &index)
 
 void MainWindow::on_addingPartyStudents_currentIndexChanged(int index)
 {
-    int current = partyRow;
+    //int current = partyRow;
     QString AshesOne = ui->addingPartyStudents->currentText();
     qDebug()<<AshesOne;
     //ui->addingPartyStudents->removeItem(index);
@@ -599,11 +742,10 @@ void MainWindow::on_NextImage_clicked()
 
 /*void MainWindow::on_addingPartyStudents_highlighted(int index)
 {
-
 }*/
 
 
-
+//УДАЛИТЬ СТУДЕНТА ИЗ СПИСКА ПОСЕТИВШИХ МЕРОПРИЯТИЕ//
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
     QList<QListWidgetItem*> items = ui->listWidget->selectedItems();
@@ -613,10 +755,9 @@ void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
     }
 }
 
+//СОХРАНИТЬ СПИСОК СТУДЕНТОВ, ПОСЕТИВШИХ МЕРОПРИЯТИЕ//
 void MainWindow::on_saveInfo_clicked()
 {
-
-
     QList<QString> texts;
 
     QList<QListWidgetItem *> items =
@@ -647,18 +788,398 @@ void MainWindow::on_saveInfo_clicked()
 
 }
 
+//КНОПКА ПЕРЕХОДА НА УСПЕВАЕМОСТЬ//
+void MainWindow::on_succButton_clicked()
+{
+    ui->tabWidget->setCurrentIndex(2);
+    update_successComboBox();
+}
+
+//КНОПКА ПЕРЕХОДА НА СТАРОСТ//
+void MainWindow::on_masterButton_clicked()
+{
+    ui->tabWidget->setCurrentIndex(3);
+}
+
+//КНОПКА СОХРАНЕНИЯ ТАБЛИЦЫ УСПЕВАЕМОСТИ//
+void MainWindow::on_saveSuccessTableViewButton_clicked()
+{
+    saveSuccessTableView();
+}
+
+//КНОПКА ПРОСТАВЛЕНИЯ РЕЗУЛЬТАТОВ СЕССИИ//
+void MainWindow::on_setResultSession_clicked()
+{
+
+    int size = successModel->rowCount();
+
+    for (int i = 0; i<size; ++i)
+    {
+        double result = 0;
+        int twoCnt = 0;
+
+        for (int j = 2; j<6; ++j)
+        {
+            result+=successModel->index(i,j).data().toInt();
+            if (successModel->index(i,j).data().toInt() == 2)
+            {
+                twoCnt++;
+            }
+        }
+        QString temp = "";
+        if (twoCnt>0)
+        {
+            temp = "Плох.";
+
+        }else{
+
+        if (result/4 > 4.5) temp = "Отл.";
+        else if (result/4 > 3.5 && result/4 <= 4.5) temp = "Хор.";
+        else if (result/4 > 2.99 && result/4 <= 3.5) temp = "Удовл.";
+
+        }
+
+        QStandardItem* mark = new QStandardItem(temp);
+        successModel->setItem(i,6,mark);
+        ui->successTableView->setColumnHidden(7, true);
+    }
+}
+
+//КНОПКА ПОКАЗА НЕУСПЕВАЮЩИХ СТУДЕНТОВ//
+void MainWindow::on_unsuccessfulStudentsTableViewButton_clicked()
+{
+    for (int i =0; i<successModel->rowCount(); ++i)
+    {
+        QString currentMark = successModel->index(i,6).data().toString();
+        if (currentMark != " Плох.")
+        {
+            ui->successTableView->setRowHidden(i, true);
+        }
+    }
+}
+
+//СБРОСИТЬ ТАБЛИЦУ УСПЕВАЕМОСТИ//
+void MainWindow::on_resetSuccessTableView_clicked()
+{
+    for (int i =0; i<successModel->rowCount(); ++i)
+    {
+            ui->successTableView->setRowHidden(i, false);
+    }
+}
+
+//ОБНОВИТЬ ТАБЛИЦУ УСПЕВАЕМОСТИ//
+void MainWindow::update_successComboBox()
+{
+
+    QVector<QString>elements;
+
+    for (int i = 0; i<model->rowCount(); ++i)
+    {
+        uniqueGroup.insert(model->index(i,2).data().toString());
+    }
+
+    foreach (const QString &value, uniqueGroup)
+        elements.push_back(value);
+
+    for (int i = 0; i<elements.size(); ++i)
+    {
+        ui->successComboBox->addItem(elements[i]);
+    }
+}
+
+//ПОКАЗАТЬ ОПРЕДЕЛЕННУЮ ГРУППУ В УСПЕВАЕМОСТИ//
+void MainWindow::on_showGroupButton_clicked()
+{
+   on_resetSuccessTableView_clicked();
+   QString currentGroup = ui->successComboBox->currentText();
+
+   for (int i =0; i<successModel->rowCount(); ++i)
+   {
+       QString Group = successModel->index(i,1).data().toString();
+
+       Group = Group.trimmed();
+
+       if (Group != currentGroup)
+       {
+           ui->successTableView->setRowHidden(i, true);
+       }
+   }
+
+}
+
+//КНОПКА ПОИСКА СТУДЕНТА ПО ФИО//
+void MainWindow::on_searchButton_clicked()
+{
+   on_resetSuccessTableView_clicked();
+   if (ui->searchByFIO->text() != "")
+   {
+       QString FIO = ui->searchByFIO->text();
+       for (int i =0; i<successModel->rowCount(); ++i)
+       {
+           QString currentFIO = successModel->index(i,0).data().toString();
+
+           if (FIO != currentFIO)
+           {
+               ui->successTableView->setRowHidden(i, true);
+           }
+       }
+   }
+}
+
+//СОЗДАНИЕ ПДФ ФАЙЛА С НЕУСПЕВАЮЩИМИ//
+void MainWindow::on_createPdfSuccessTableViewButton_clicked()
+{
+    QString filename = QFileDialog::getSaveFileName(this, "Сохранить отчёт", QDir::currentPath(), "*.pdf");
+
+        if (filename != "") {
+            QPdfWriter pdf(filename);
+            QPainter painter(&pdf);
+            int sign = 0;
+            painter.drawText(20,50,QString("Список неуспевщих студентов по итогам сессии:"));
+
+            for (int i =0, x = 20, y = 500; i<successModel->rowCount(); ++i)
+            {
+                QString currentMark = successModel->index(i,6).data().toString();
+                if (currentMark == " Плох.")
+                {
+                    QString currentName = successModel->index(i,0).data().toString();
+
+                    if (currentName.length()>=30) currentName+="\t";
+                    else currentName+="\t\t";
+
+                    QString currentGroup = successModel->index(i,1).data().toString();
+                    currentGroup = "Группа:"+currentGroup;
+                    painter.drawText(x,y, currentName + currentGroup);
+                    y+=200; sign = y;
+                }
+            }
+            painter.drawText(20, sign+300, "ПОДПИСЬ: ");
+        }
+}
 
 
+//ЗАПОЛНИТЬ ТАБЛИЦУ СТАРОСТ//
+void MainWindow::createAkatsukiTableView()
+{
+    AkatsukiColumnNames<<"ФИО"<<"Группа"<<"Роль";
+
+    leaderModel = new QStandardItemModel;
+    for (int i =0; i<3; ++i){
+        QStandardItem* newColumn = new QStandardItem(QString(AkatsukiColumnNames[i]));
+        leaderModel->setHorizontalHeaderItem(i, newColumn);
+
+    }
+
+    ui->akatsukiTableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->akatsukiTableView->setSelectionMode(QAbstractItemView::SingleSelection);
 
 
+    ui->akatsukiTableView->setModel(leaderModel);
+
+    ui->akatsukiTableView->setColumnWidth(0,335);
+    ui->akatsukiTableView->setColumnWidth(1,85);
+    ui->akatsukiTableView->setColumnWidth(2,85);
+}
+
+//КОМБО БОКС С ГРУППАМИ В СТАРОСТАХ//
+void MainWindow::update_akatsukiComboBox()
+{
+    ui->chooseLeaderOfAkatsuki->clear();
+    QVector<QString>elements;
+
+    for (int i = 0; i<model->rowCount(); ++i)
+    {
+        uniqueGroup.insert(model->index(i,2).data().toString());
+    }
+
+    foreach (const QString &value, uniqueGroup)
+        elements.push_back(value);
+
+    for (int i = 0; i<elements.size(); ++i)
+    {
+        ui->chooseGroupOfAkatsuki->addItem(elements[i]);
+    }
+    update_leaderOfAkatsukiComboBox();
+}
+
+//КОМБО БОКС СО СТУДЕНТАМИ В СТАРОСТАХ//
+void MainWindow::update_leaderOfAkatsukiComboBox()
+{
+    ui->chooseLeaderOfAkatsuki->clear();
+    QVector<QString>students;
+
+    QString currentGroup = ui->chooseGroupOfAkatsuki->currentText();
+
+    for (int i = 0; i<model->rowCount(); ++i)
+    {
+        if (model->index(i,2).data().toString() == currentGroup)
+        {
+            students.push_back(model->index(i,0).data().toString());
+        }
+    }
+
+    for (int i =0; i<students.size(); ++i)
+    {
+        ui->chooseLeaderOfAkatsuki->addItem(students[i]);
+    }
+}
+
+//ПРОВЕРКА СУЩЕСТВОВАНИЯ ФАЙЛА ТАБЛИЦЫ С УСПЕВАЕМОСТЬЮ//
+void MainWindow::checkSuccessFile()
+{
+    QFile successFile("D:/qt/CourseWork/source/SuccessTable/successTable.csv");
+       if ( !successFile.open(QFile::ReadOnly | QFile::Text) ) {
+           qDebug() << "File not exists";
+           createSuccessTableView();
+           fillTableView();
+       } else {
+           qDebug()<<"Trying to read...";
+           createSuccessTableView();
+           readSuccessTableView();
+       }
+}
+
+//ПРИ ИЗМЕНЕНИИ КОМБО БОКСА С ГРУППАМИ - МЕНЯЕТСЯ КОМБО БОКС СО СТУДЕНТАМИ//
+void MainWindow::on_chooseGroupOfAkatsuki_currentTextChanged(const QString &arg1)
+{
+    ui->chooseLeaderOfAkatsuki->clear();
+    QVector<QString>students;
+
+    QString currentGroup = arg1;
+
+    for (int i = 0; i<model->rowCount(); ++i)
+    {
+        if (model->index(i,2).data().toString() == currentGroup)
+        {
+            students.push_back(model->index(i,0).data().toString());
+        }
+    }
+
+    for (int i =0; i<students.size(); ++i)
+    {
+        ui->chooseLeaderOfAkatsuki->addItem(students[i]);
+    }
+}
+
+void MainWindow::on_addAkatsukiLeader_clicked()
+{
+    QList<QStandardItem *> standardItemsList;
+
+    QStandardItem* NameOfStudent = new QStandardItem(ui->chooseLeaderOfAkatsuki->currentText());
+    standardItemsList.push_back(NameOfStudent);
+
+    QStandardItem* NameOfGroup = new QStandardItem(ui->chooseGroupOfAkatsuki->currentText());
+    standardItemsList.push_back(NameOfGroup);
+
+    QStandardItem* Role = new QStandardItem(QString("Староста"));
+    standardItemsList.push_back(Role);
+
+    leaderModel->insertRow(leaderModel->rowCount(), standardItemsList);
+
+    ui->akatsukiTableView->setColumnWidth(0,335);
+    ui->akatsukiTableView->setColumnWidth(1,85);
+    ui->akatsukiTableView->setColumnWidth(2,85);
+}
 
 
+void MainWindow::on_saveAkatsukiTableButton_clicked()
+{
+    QString textData;
+    int rows = leaderModel->rowCount();
+    int columns = leaderModel->columnCount();
 
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
 
+                textData += leaderModel->data(leaderModel->index(i,j)).toString();
+                textData += "; " ;
+        }
+        textData += "\n";
+    }
 
+    QString folderPath = "D:/qt/CourseWork/source/LeaderTable/";
+    QDir dir;
+    if(dir.mkpath(folderPath))
+           qDebug("folder created");
+       if(dir.exists(folderPath))
+           qDebug("folder exists");
 
+       folderPath+="leaderTable.csv";
 
+    QFile csvFile(folderPath);
+    if(csvFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 
+        QTextStream out(&csvFile);
+        out << textData;
 
+        csvFile.close();
+    }
+}
 
+void MainWindow::readAkatsukiTable()
+{
+    QFile file("D:/qt/CourseWork/source/LeaderTable/leaderTable.csv");
+       if ( !file.open(QFile::ReadOnly | QFile::Text) ) {
+           qDebug() << "File not exists";
+       } else {
 
+           QTextStream in(&file);
+           leaderModel->clear();
+           for (int i =0; i<3; ++i){
+               QStandardItem* newColumn = new QStandardItem(QString(AkatsukiColumnNames[i]));
+               leaderModel->setHorizontalHeaderItem(i, newColumn);
+
+           }
+           while (!in.atEnd())
+           {
+               QString line = in.readLine();
+
+               QList<QStandardItem *> standardItemsList;
+
+               for (QString item : line.split(";")) {
+                   standardItemsList.append(new QStandardItem(item));
+               }
+               leaderModel->insertRow(leaderModel->rowCount(), standardItemsList);
+           }
+           file.close();
+       }
+
+       ui->akatsukiTableView->setColumnWidth(0,335);
+       ui->akatsukiTableView->setColumnWidth(1,85);
+       ui->akatsukiTableView->setColumnWidth(2,85);
+       ui->akatsukiTableView->setColumnHidden(3,true);
+}
+
+void MainWindow::checkAkatsukiSuccessFile()
+{
+    QFile successFile("D:/qt/CourseWork/source/LeaderTable/leaderTable.csv");
+       if ( !successFile.open(QFile::ReadOnly | QFile::Text) ) {
+           qDebug() << "File not exists";
+           createAkatsukiTableView();
+       } else {
+           qDebug()<<"Trying to read...";
+           createAkatsukiTableView();
+           readAkatsukiTable();
+       }
+}
+
+void MainWindow::on_akatsukiTableView_doubleClicked(const QModelIndex &index)
+{
+    leaderRow = index.row();
+}
+
+void MainWindow::on_akatsukiTableView_clicked(const QModelIndex &index)
+{
+    leaderRow = index.row();
+}
+
+void MainWindow::on_akatsukiTableView_activated(const QModelIndex &index)
+{
+    leaderRow = index.row();
+}
+
+void MainWindow::on_deleteLeaderButton_clicked()
+{
+    leaderModel->removeRow(leaderRow);
+    ui->akatsukiTableView->setModel(leaderModel);
+}

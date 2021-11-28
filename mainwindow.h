@@ -2,8 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QSqlDatabase>
 #include <QDebug>
+#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlTableModel>
 #include <QSqlQueryModel>
@@ -11,12 +11,19 @@
 #include <QFile>
 #include <QDate>
 #include <QIODevice>
+#include <QStandardItemModel>
 #include <QSqlError>
 #include <QTextCodec>
+#include <QTextStream>
+#include <QTextFormat>
+#include <QTextDocument>
+#include <QPainter>
+#include <QTextTableCell>
 #include <QListWidget>
 #include <QDataStream>
-#include <QTextStream>
+#include <QSet>
 #include <QVector>
+#include <QPdfWriter>
 
 namespace Ui {
 class MainWindow;
@@ -31,8 +38,32 @@ public:
     ~MainWindow();
 
     void updateComboBox();
+
     void create_Students_folder();
+
     void update_PartyStudents_combo();
+
+    void fillTableView();
+
+    void saveSuccessTableView();
+
+    void readSuccessTableView();
+
+    void createSuccessTableView();
+
+    void update_successComboBox();
+
+    void createAkatsukiTableView();
+
+    void update_akatsukiComboBox();
+
+    void update_leaderOfAkatsukiComboBox();
+
+    void checkSuccessFile();
+
+    void readAkatsukiTable();
+
+    void checkAkatsukiSuccessFile();
 
 
 private slots:
@@ -86,11 +117,44 @@ private slots:
 
     void on_saveInfo_clicked();
 
+    void on_succButton_clicked();
+
+    void on_masterButton_clicked();
+
+    void on_saveSuccessTableViewButton_clicked();
+
+    void on_setResultSession_clicked();
+
+    void on_unsuccessfulStudentsTableViewButton_clicked();
+
+    void on_resetSuccessTableView_clicked();
+
+    void on_showGroupButton_clicked();
+
+    void on_searchButton_clicked();
+
+    void on_createPdfSuccessTableViewButton_clicked();
+
+    void on_chooseGroupOfAkatsuki_currentTextChanged(const QString &arg1);
+
+    void on_addAkatsukiLeader_clicked();
+
+    void on_saveAkatsukiTableButton_clicked();
+
+    void on_akatsukiTableView_doubleClicked(const QModelIndex &index);
+
+    void on_akatsukiTableView_clicked(const QModelIndex &index);
+
+    void on_akatsukiTableView_activated(const QModelIndex &index);
+
+    void on_deleteLeaderButton_clicked();
+
 protected:
 
 
 private:
     Ui::MainWindow *ui;
+
     QSqlDatabase db;
     QSqlDatabase partyDB;
     QSqlTableModel *model;
@@ -98,9 +162,22 @@ private:
     QSqlQuery *query;
     QSqlQuery *partyQuery;
 
+    QStandardItemModel* csvModel;
+    QStandardItemModel* successModel;
+    QStandardItemModel* leaderModel;
+    QStandardItemModel* leaderCsvModel;
+
+    QSet<QString> uniqueGroup;
+
     QVector<QString>images;
+    QVector<QString>StudentName;
+    QVector<QString>StudentGroup;
+    QVector<QString>ColumnNames;
+    QVector<QString>AkatsukiColumnNames;
+
     int row = 1;
     int partyRow = 1;
+    int leaderRow = 1;
     int cnt = 0;
 };
 
