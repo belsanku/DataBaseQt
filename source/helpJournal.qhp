@@ -1,0 +1,31 @@
+<QtHelpProject version="1.0">
+     <namespace>belonogov.journal</namespace>
+     <virtualFolder>doc</virtualFolder>
+     <customFilter name="Электронный журнал куратора">
+         <filterAttribute>journal</filterAttribute>
+         <filterAttribute>1.0</filterAttribute>
+     </customFilter>
+     <filterSection>
+         <filterAttribute>journal</filterAttribute>
+         <filterAttribute>1.0</filterAttribute>
+         <toc>
+             <section title="Руководство по приложению" ref="index.html">
+                 <section title="Главное окно" ref="mainwindow.html"/>
+                 <section title="Мероприятия" ref="party.html"/>
+                 <section title="Успеваемость" ref="success.html"/>
+                 <section title="Старосты" ref="akatsuki.html"/>
+                 <section title="Изменить пароль" ref="password.html"/>
+             </section>
+         </toc>     
+         <keywords>
+             <keyword name="chapter1" id="MyApplication::chapter1" ref="doc.html#chapter1"/>
+             <keyword name="chapter1" id="MyApplication::chapter2" ref="doc.html#chapter2"/>
+             <keyword name="chapter1" id="MyApplication::chapter3" ref="doc.html#chapter3"/>
+             <keyword name="chapter1" id="MyApplication::chapter4" ref="doc.html#chapter4"/>
+             <keyword name="chapter1" id="MyApplication::chapter5" ref="doc.html#chapter5"/>
+         </keywords>  
+         <files>
+             <file>*.html</file>
+         </files>
+     </filterSection>
+ </QtHelpProject>

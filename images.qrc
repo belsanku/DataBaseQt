@@ -8,5 +8,7 @@
         <file>source/konog.ico</file>
         <file>source/style.qss</file>
         <file>source/konoha.ico</file>
+        <file>source/helpCollection.qhcp</file>
+        <file>source/helpJournal.qhp</file>
     </qresource>
 </RCC>

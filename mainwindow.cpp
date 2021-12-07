@@ -345,6 +345,9 @@ void MainWindow::on_addStudent_clicked()
 //УДАЛИТЬ СТУДЕНТА//
 void MainWindow::on_deleteStudent_clicked()
 {
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Information, "Удаление", "Вы уверены, что хотите удалить студента?", QMessageBox::Ok| QMessageBox::Cancel, this);
+
+    if (msgBox->exec() == QMessageBox::Ok){
     model->removeRow(row);
     model =  new QSqlTableModel(this, db);
     model->setTable("Журнал");
@@ -354,6 +357,8 @@ void MainWindow::on_deleteStudent_clicked()
 
     create_Students_folder();
     update_successComboBox();
+    delete msgBox;
+    }else delete msgBox;
 }
 
 //НАЖАТИЕ НА ТАБЛИЦУ//
@@ -573,6 +578,8 @@ int removeFolder(QDir & dir)
 //УДАЛИТЬ МЕРОПРИЯТИЕ ИЗ ТАБЛИЦЫ//
 void MainWindow::on_deletePartyButton_clicked()
 {
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Information, "Удаление", "Вы уверены, что хотите удалить мероприятие?", QMessageBox::Ok| QMessageBox::Cancel, this);
+    if (msgBox->exec() == QMessageBox::Ok){
     QString PartyName = partyModel->index(partyRow,0).data().toString();
     QDir dir;
 
@@ -586,6 +593,9 @@ void MainWindow::on_deletePartyButton_clicked()
     partyModel->select();
     partyModel->sort(1, Qt::DescendingOrder);
     ui->partyTableView->setModel(partyModel);
+
+    delete msgBox;
+    }else delete msgBox;
 }
 
 
@@ -748,11 +758,15 @@ void MainWindow::on_NextImage_clicked()
 //УДАЛИТЬ СТУДЕНТА ИЗ СПИСКА ПОСЕТИВШИХ МЕРОПРИЯТИЕ//
 void MainWindow::on_listWidget_itemDoubleClicked(QListWidgetItem *item)
 {
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Information, "Удаление", "Вы уверены, что хотите удалить студента?", QMessageBox::Ok| QMessageBox::Cancel, this);
     QList<QListWidgetItem*> items = ui->listWidget->selectedItems();
-    foreach(item, items)
-    {
-        delete ui->listWidget->takeItem(ui->listWidget->row(item));
-    }
+    if (msgBox->exec() == QMessageBox::Ok){
+        foreach(item, items)
+        {
+            delete ui->listWidget->takeItem(ui->listWidget->row(item));
+        }
+        delete msgBox;
+    }else delete msgBox;
 }
 
 //СОХРАНИТЬ СПИСОК СТУДЕНТОВ, ПОСЕТИВШИХ МЕРОПРИЯТИЕ//
@@ -1180,6 +1194,22 @@ void MainWindow::on_akatsukiTableView_activated(const QModelIndex &index)
 
 void MainWindow::on_deleteLeaderButton_clicked()
 {
+    QMessageBox *msgBox = new QMessageBox(QMessageBox::Information, "Удаление", "Вы уверены, что хотите удалить cтаросту?", QMessageBox::Ok| QMessageBox::Cancel, this);
+    if (msgBox->exec() == QMessageBox::Ok){
     leaderModel->removeRow(leaderRow);
     ui->akatsukiTableView->setModel(leaderModel);
+    delete msgBox;
+    }else delete msgBox;
+}
+
+void MainWindow::on_actionInfo_triggered()
+{
+    QProcess *process = new QProcess;
+     QStringList args;
+     args << QLatin1String("-collectionFile")
+         << QLatin1String("helpCollection.qhc")
+         << QLatin1String("-enableRemoteControl");
+     process->start(QLatin1String("assistant"), args);
+     if (!process->waitForStarted())
+         return;
 }

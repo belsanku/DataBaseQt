@@ -40,7 +40,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="firstTab">
      <attribute name="title">
@@ -1380,6 +1380,7 @@
     </property>
     <addaction name="Authors"/>
     <addaction name="NewPassword"/>
+    <addaction name="actionInfo"/>
    </widget>
    <addaction name="Open"/>
    <addaction name="About"/>
@@ -1421,6 +1422,14 @@
   <action name="NewPassword">
    <property name="text">
     <string>Изменить пароль</string>
+   </property>
+  </action>
+  <action name="actionInfo">
+   <property name="text">
+    <string>Справка</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
    </property>
   </action>
  </widget>

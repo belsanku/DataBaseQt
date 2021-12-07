@@ -13,6 +13,12 @@
 #include <QIODevice>
 #include <QStandardItemModel>
 #include <QSqlError>
+#include <QMessageBox>
+#include <QtHelp/QHelpEngineCore>
+#include <QTextBrowser>
+#include <QVBoxLayout>
+#include <QProcess>
+#include <QtHelp/QHelpEngine>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QTextFormat>
@@ -148,6 +154,8 @@ private slots:
     void on_akatsukiTableView_activated(const QModelIndex &index);
 
     void on_deleteLeaderButton_clicked();
+
+    void on_actionInfo_triggered();
 
 protected:
 
